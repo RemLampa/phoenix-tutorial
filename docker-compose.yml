@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:12.3-alpine
+    container_name: db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: Insecure_password
+      POSTGRES_DB: discuss
+    ports:
+      - 5432:5432
+    volumes:
+      - discuss:/var/lib/postgresql/data
+    networks:
+      - discuss
+    logging:
+      driver: none
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@discuss.ph
+      PGADMIN_DEFAULT_PASSWORD: Insecure_password
+      PGADMIN_LISTEN_PORT: 5050
+    volumes:
+      - discuss_pgadmin:/var/lib/pgadmin
+    ports:
+      - 5050:5050
+    logging:
+      driver: none
+    networks:
+      - discuss
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  discuss:
+  discuss_pgadmin:
+
+networks:
+  discuss:
